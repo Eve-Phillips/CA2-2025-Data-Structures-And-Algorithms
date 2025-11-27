@@ -91,4 +91,102 @@ public class ElectionSystemManager {
         }
         return results;
     }
+
+    //-------------------------
+    // Election Management
+    //-------------------------
+
+    private String buildElectionKey(String type, int year, String location) {
+        return type + "-" + year + "-" + location;
+    }
+
+    public boolean addElection(String type, String location, int year, int numberOfWinners) {
+        String key = buildElectionKey(type, year, location);
+
+        if (elections.get(key) != null) {
+            return false; // exists already
+        }
+
+        Election e = new Election(type, location, year, numberOfWinners);
+        elections.put(key, e);
+        return true;
+    }
+
+    public Election getElection(String type, int year, String location) {
+        return elections.get(buildElectionKey(type, year, location));
+    }
+
+    public boolean deleteElection(String type, int year, String location) {
+        String key = buildElectionKey(type, year, location);
+
+        if (elections.get(key) == null) return false;
+        elections.remove(key);
+        return true;
+    }
+
+    public boolean updateElection(String type, int year, String location,
+                                  String newType, String newLocation,
+                                  int newYear, int winners) {
+
+        String oldKey = buildElectionKey(type, year, location);
+        Election e = elections.get(oldKey);
+        if (e == null) return false;
+
+        // Remove old key if changed
+        String newKey = buildElectionKey(newType, newYear, newLocation);
+        elections.remove(oldKey);
+
+        // Update details
+        e.updateDetails(newType, newLocation, newYear, winners);
+
+        // Reinsert using new key
+        elections.put(newKey, e);
+        return true;
+    }
+
+    // -------------------------------
+    // Search Elections
+    // -------------------------------
+    public MyArray<Election> searchElectionsByYear(int year) {
+        MyArray<Election> results = new MyArray<>();
+
+        for (int i = 0; i < 200; i++) {
+            Election e = elections.getFromIndex(i);
+            if (e != null && e.getYear() == year) {
+                results.add(e);
+            }
+        }
+        return results;
+    }
+
+    public MyArray<Election> searchElectionsByType(String type) {
+        MyArray<Election> results = new MyArray<>();
+
+        for (int i = 0; i < 200; i++) {
+            Election e = elections.getFromIndex(i);
+            if (e != null && e.getType().equalsIgnoreCase(type)) {
+                results.add(e);
+            }
+        }
+        return results;
+    }
+
+    // -------------------------------
+    // Candidate Management
+    // -------------------------------
+    public boolean addCandidate(String politicianName, String type, int year, String location, String partyAtTime, int votes) {
+        Politician p = politicians.get(politicianName);
+        Election e = getElection(type, year, location);
+
+        if (p == null || e == null) return false;
+
+        // Create entry
+        CandidateEntry ce = new CandidateEntry(p, e, partyAtTime, votes);
+
+        // Link both ways
+        p.addCandidacy(ce);
+        e.addCandidate(ce);
+
+        return true;
+    }
 }
