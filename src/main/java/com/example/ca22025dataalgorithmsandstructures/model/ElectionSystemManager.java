@@ -1,6 +1,7 @@
 package com.example.ca22025dataalgorithmsandstructures.model;
 
 import com.example.ca22025dataalgorithmsandstructures.structures.HashTable;
+import com.example.ca22025dataalgorithmsandstructures.structures.MyArray;
 
 public class ElectionSystemManager {
     private HashTable<String, Politician> politicians;
@@ -49,5 +50,45 @@ public class ElectionSystemManager {
             p.updateDetails(newName, dateOfBirth, party, county, imageUrl);
         }
         return true;
+    }
+
+    //-------------------------
+    // Search Politicians
+    //-------------------------
+
+    public MyArray<Politician> searchPoliticiansByName(String part) {
+        MyArray<Politician> results = new MyArray<>();
+
+        for (int i = 0; i < 200; i++) {
+            Politician p = politicians.getFromIndex(i); // need helper below
+            if (p != null && p.getName().toLowerCase().contains(part.toLowerCase())) {
+                results.add(p);
+            }
+        }
+        return results;
+    }
+
+    public MyArray<Politician> searchPoliticiansByParty(String party) {
+        MyArray<Politician> results = new MyArray<>();
+
+        for (int i = 0; i < 200; i++) {
+            Politician p = politicians.getFromIndex(i);
+            if (p != null && p.getParty().equalsIgnoreCase(party)) {
+                results.add(p);
+            }
+        }
+        return results;
+    }
+
+    public MyArray<Politician> searchPoliticiansByCounty(String county) {
+        MyArray<Politician> results = new MyArray<>();
+
+        for (int i = 0; i < 200; i++) {
+            Politician p = politicians.getFromIndex(i);
+            if (p != null && p.getCounty().equalsIgnoreCase(county)) {
+                results.add(p);
+            }
+        }
+        return results;
     }
 }
