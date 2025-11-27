@@ -55,6 +55,14 @@ public class HashTable<K, V> {
         }
         return null;
     }
+
+    public V getFromIndex(int index) {
+        if (index < 0 || index >= capacity) return null;
+        if (table[index] == null || table[index].deleted) return null;
+        return table[index].value;
+    }
+
+
     public void remove(K key) {
         int index = hash(key);
 
