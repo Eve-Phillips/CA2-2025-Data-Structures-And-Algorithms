@@ -55,7 +55,7 @@ public class HashTable<K, V> {
         }
         return null;
     }
-
+    // get from index
     public V getFromIndex(int index) {
         if (index < 0 || index >= capacity) return null;
         if (table[index] == null || table[index].deleted) return null;

@@ -19,7 +19,7 @@ public class ElectionSystemManager {
 
     public boolean addPolitician(String name, String dateOfBirth, String party, String county, String imageUrl) {
         if(politicians.get(name) != null) {
-            return false; // already exists, dont add
+            return false; // already exists, dont add.
         }
 
         Politician p = new Politician(name, dateOfBirth, party, county, imageUrl);
