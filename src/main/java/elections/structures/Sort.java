@@ -7,7 +7,7 @@ public class Sort {
 
     // ------------------------------------------------------------
     // SELECTION SORT (DESC by votes)
-    // Finds the candidate with the HIGHEST votes and moves it forward
+    // Finds the candidate with the highest votes and moves it forward
     // ------------------------------------------------------------
     public static void sortCandidatesByVotesDesc(MyArray<CandidateEntry> a) {
 
