@@ -4,7 +4,12 @@ import elections.structures.HashTable;
 import elections.structures.MyArray;
 import elections.structures.Sort;
 
+// Persistence imports
+import com.example.ca22025dataalgorithmsandstructures.persistence.PersistenceManagerXStream;
+import java.io.IOException;
+
 public class ElectionSystemManager {
+    public static final String DEFAULT_SAVE_FILE = "elections.xml"; // Default filename for persistence
     private HashTable<String, Politician> politicians;
     private HashTable<String, Election> elections;
 
@@ -297,6 +302,15 @@ public class ElectionSystemManager {
 
         Sort.sortCandidatesByVotesDesc(copy);
         return copy;
+    }
+
+    // Persistence - save and load methods
+    public void saveToFile(String filename) throws IOException {
+        PersistenceManagerXStream.save(this, filename);
+    }
+
+    public static ElectionSystemManager loadFromFile(String filename) throws IOException {
+        return PersistenceManagerXStream.load(filename);
     }
 
 }
