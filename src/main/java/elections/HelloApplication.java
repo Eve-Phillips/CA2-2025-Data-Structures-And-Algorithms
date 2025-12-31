@@ -1,4 +1,4 @@
-package com.example.ca22025dataalgorithmsandstructures;
+package elections;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

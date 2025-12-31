@@ -1,7 +1,7 @@
-package com.example.ca22025dataalgorithmsandstructures.model;
+package elections.model;
 
-import com.example.ca22025dataalgorithmsandstructures.structures.HashTable;
-import com.example.ca22025dataalgorithmsandstructures.structures.MyArray;
+import elections.structures.HashTable;
+import elections.structures.MyArray;
 
 public class ElectionSystemManager {
     private HashTable<String, Politician> politicians;
@@ -59,7 +59,7 @@ public class ElectionSystemManager {
     public MyArray<Politician> searchPoliticiansByName(String part) {
         MyArray<Politician> results = new MyArray<>();
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 100; i++) {
             Politician p = politicians.getFromIndex(i); // need helper below
             if (p != null && p.getName().toLowerCase().contains(part.toLowerCase())) {
                 results.add(p);
@@ -71,7 +71,7 @@ public class ElectionSystemManager {
     public MyArray<Politician> searchPoliticiansByParty(String party) {
         MyArray<Politician> results = new MyArray<>();
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 100; i++) {
             Politician p = politicians.getFromIndex(i);
             if (p != null && p.getParty().equalsIgnoreCase(party)) {
                 results.add(p);
@@ -83,7 +83,7 @@ public class ElectionSystemManager {
     public MyArray<Politician> searchPoliticiansByCounty(String county) {
         MyArray<Politician> results = new MyArray<>();
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 100; i++) {
             Politician p = politicians.getFromIndex(i);
             if (p != null && p.getCounty().equalsIgnoreCase(county)) {
                 results.add(p);
@@ -174,19 +174,70 @@ public class ElectionSystemManager {
     // -------------------------------
     // Candidate Management
     // -------------------------------
-    public boolean addCandidate(String politicianName, String type, int year, String location, String partyAtTime, int votes) {
+    public boolean addCandidate(String politicianName, String type, int year, String location,
+                                String partyAtTime, int votes) {
+
         Politician p = politicians.get(politicianName);
         Election e = getElection(type, year, location);
 
         if (p == null || e == null) return false;
 
-        // Create entry
-        CandidateEntry ce = new CandidateEntry(p, e, partyAtTime, votes);
+        // block duplicates
+        if (findCandidateIndex(e, politicianName) >= 0) return false;
 
-        // Link both ways
+        CandidateEntry ce = new CandidateEntry(p, e, partyAtTime, votes);
         p.addCandidacy(ce);
         e.addCandidate(ce);
-
         return true;
     }
+
+
+    private int findCandidateIndex(Election e, String politicianName) {
+        MyArray<CandidateEntry> cands = e.getCandidates();
+        for (int i = 0; i < cands.size(); i++) {
+            CandidateEntry ce = cands.get(i);
+            if (ce.getPolitician().getName().equalsIgnoreCase(politicianName)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public boolean updateCandidate(String politicianName, String type, int year, String location,
+                                   String newPartyAtTime, int newVotes) {
+        Election e = getElection(type, year, location);
+        if (e == null) return false;
+
+        int idx = findCandidateIndex(e, politicianName);
+        if (idx < 0) return false;
+
+        CandidateEntry ce = e.getCandidates().get(idx);
+        ce.setPartyAtTheTime(newPartyAtTime);
+        ce.setVotes(newVotes);
+        return true;
+    }
+
+    public boolean deleteCandidate(String politicianName, String type, int year, String location) {
+        Election e = getElection(type, year, location);
+        Politician p = getPolitician(politicianName);
+        if (e == null || p == null) return false;
+
+        // remove from election list
+        int eIdx = findCandidateIndex(e, politicianName);
+        if (eIdx < 0) return false;
+        CandidateEntry entry = e.getCandidates().get(eIdx);
+        e.getCandidates().remove(eIdx);
+
+        // remove from politician candidacies list (same election)
+        MyArray<CandidateEntry> pcs = p.getCandidacies();
+        for (int i = 0; i < pcs.size(); i++) {
+            if (pcs.get(i).getElection() == entry.getElection()) {
+                pcs.remove(i);
+                break;
+            }
+        }
+        return true;
+    }
+
+
 }

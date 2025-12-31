@@ -1,6 +1,6 @@
-package com.example.ca22025dataalgorithmsandstructures.model;
+package elections.model;
 
-import com.example.ca22025dataalgorithmsandstructures.structures.MyArray;
+import elections.structures.MyArray;
 
 public class Politician {
 

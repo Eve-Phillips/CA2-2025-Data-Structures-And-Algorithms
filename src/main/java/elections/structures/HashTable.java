@@ -1,4 +1,4 @@
-package com.example.ca22025dataalgorithmsandstructures.structures;
+package elections.structures;
 
 public class HashTable<K, V> {
 
