@@ -2,6 +2,7 @@ package elections.model;
 
 import elections.structures.HashTable;
 import elections.structures.MyArray;
+import elections.structures.Sort;
 
 public class ElectionSystemManager {
     private HashTable<String, Politician> politicians;
@@ -52,6 +53,15 @@ public class ElectionSystemManager {
         return true;
     }
 
+    public MyArray<Politician> getAllPoliticians() {
+        MyArray<Politician> out = new MyArray<>();
+        for (int i = 0; i < 100; i++) {
+            Politician p = politicians.getFromIndex(i);
+            if (p != null) out.add(p);
+        }
+        return out;
+    }
+
     //-------------------------
     // Search Politicians
     //-------------------------
@@ -89,6 +99,28 @@ public class ElectionSystemManager {
                 results.add(p);
             }
         }
+        return results;
+    }
+
+    //-------------------------
+    // Search Politicians (Sorted)
+    //-------------------------
+
+    public MyArray<Politician> searchPoliticiansByNameSorted(String part) {
+        MyArray<Politician> results = searchPoliticiansByName(part);
+        Sort.sortPoliticiansByName(results);
+        return results;
+    }
+
+    public MyArray<Politician> searchPoliticiansByPartySorted(String party) {
+        MyArray<Politician> results = searchPoliticiansByParty(party);
+        Sort.sortPoliticiansByName(results);
+        return results;
+    }
+
+    public MyArray<Politician> searchPoliticiansByCountySorted(String county) {
+        MyArray<Politician> results = searchPoliticiansByCounty(county);
+        Sort.sortPoliticiansByName(results);
         return results;
     }
 
@@ -144,13 +176,22 @@ public class ElectionSystemManager {
         return true;
     }
 
+    public MyArray<Election> getAllElections() {
+        MyArray<Election> out = new MyArray<>();
+        for (int i = 0; i < 100; i++) {
+            Election e = elections.getFromIndex(i);
+            if (e != null) out.add(e);
+        }
+        return out;
+    }
+
     // -------------------------------
     // Search Elections
     // -------------------------------
     public MyArray<Election> searchElectionsByYear(int year) {
         MyArray<Election> results = new MyArray<>();
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 100; i++) {
             Election e = elections.getFromIndex(i);
             if (e != null && e.getYear() == year) {
                 results.add(e);
@@ -162,7 +203,7 @@ public class ElectionSystemManager {
     public MyArray<Election> searchElectionsByType(String type) {
         MyArray<Election> results = new MyArray<>();
 
-        for (int i = 0; i < 200; i++) {
+        for (int i = 0; i < 100; i++) {
             Election e = elections.getFromIndex(i);
             if (e != null && e.getType().equalsIgnoreCase(type)) {
                 results.add(e);
@@ -170,6 +211,9 @@ public class ElectionSystemManager {
         }
         return results;
     }
+
+
+
 
     // -------------------------------
     // Candidate Management
@@ -239,5 +283,20 @@ public class ElectionSystemManager {
         return true;
     }
 
+    // -------------------------------
+    // Sorted Candidates
+    // -------------------------------
+
+    public MyArray<CandidateEntry> getCandidatesSortedByVotes(String type, int year, String location) {
+        Election e = getElection(type, year, location);
+        if (e == null) return new MyArray<>();
+
+        MyArray<CandidateEntry> copy = new MyArray<>();
+        MyArray<CandidateEntry> original = e.getCandidates();
+        for (int i = 0; i < original.size(); i++) copy.add(original.get(i));
+
+        Sort.sortCandidatesByVotesDesc(copy);
+        return copy;
+    }
 
 }

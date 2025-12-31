@@ -1,4 +1,4 @@
-module com.example.ca22025dataalgorithmsandstructures {
+module elections {
     requires javafx.controls;
     requires javafx.fxml;
 
